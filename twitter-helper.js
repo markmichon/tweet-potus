@@ -1,5 +1,3 @@
-'use strict';
-module.change_code = 1;
 var Twitter = require('twit');
 var data = require('./data/config');
 var CONSUMER_KEY = data.customer_key;
@@ -14,12 +12,19 @@ function TwitterHelper(accessToken) {
   });
 }
 
-TwitterHelper.prototype.postTweet = function(message) {
+TwitterHelper.prototype.postTweet = function(message, callback) {
   return this.client.post('statuses/update', {
     status: message
-  }).catch(function(err) {
-      return false;
-    });
+  },
+  function(err, data, response) {
+    if (err) {
+      console.log(err)
+      callback('An error occured sending the tweet: ' + err)
+    } else {
+      callback('Tweet sent successfully!');
+    }
+  })
+
 };
 
 module.exports = TwitterHelper;
